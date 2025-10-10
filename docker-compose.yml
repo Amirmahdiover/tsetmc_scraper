@@ -9,7 +9,11 @@ services:
       - redis
       - db
     environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/marketdb
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=marketdb
       - REDIS_URL=redis://redis:6379/0
 
   redis:
