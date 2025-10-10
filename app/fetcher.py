@@ -25,7 +25,17 @@ async def fetch_market_data():
     if cached:
         print("Using cached data...")
         return [MarketSymbol(**item) for item in cached]
-    
+
+    db_data = read_market_data_from_postgres()
+    if len(db_data)<1:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(URL) as response:
+                print('filling db for first time!')
+                raw = await response.json()
+                data = raw["marketwatch"]
+                models = [MarketSymbol(**item) for item in data]
+                save_market_data_to_postgres(models)
+
     if not is_market_open():
         print("Market closed — reading from DB...")
         return read_market_data_from_postgres()
