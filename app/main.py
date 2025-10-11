@@ -2,6 +2,7 @@ from fastapi import FastAPI,Query
 from app.fetcher import fetch_market_data
 from typing import List, Optional
 from app.models import MarketSymbol  # your Pydantic model
+from app.persian_converter import to_persian_dict
 # --------------------------------------------------------
 
 # Create tables in the database
@@ -13,9 +14,13 @@ Base.metadata.create_all(bind=engine)
 # print("✅ Tables created successfully.")
 
 # --------------------------------------------------------
+
+
+
+
 app = FastAPI()
 
-@app.get("/market-data", response_model=List[MarketSymbol])
+@app.get("/market-data")
 async def get_market_data_api(
     
     sort_by: Optional[str] = Query(
@@ -32,9 +37,7 @@ async def get_market_data_api(
         description="Optional insCode to filter by instrument"
     )
 ):
-    print(">>> market-data endpoint HIT")
     data = await fetch_market_data()
-    print(">>> market-data endpoint DONE")
     # 🔍 Optional filter
     if ins_code:
         data = [item for item in data if item.insCode == ins_code]
@@ -46,7 +49,7 @@ async def get_market_data_api(
     except AttributeError:
         pass  # ignore if field doesn't exist
 
-    return data
+    return [to_persian_dict(d) for d in data]
 
 # uvicorn app.main:app --reload
 
@@ -57,7 +60,7 @@ from fastapi import WebSocket
 from app.socket_client import tsetmc_stream
 
 
-@app.websocket("/ws/{ins_code}")
+@app.websocket("/ws")
 async def market_stream(websocket: WebSocket, ins_code: str):
     await websocket.accept()
     

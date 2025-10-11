@@ -46,6 +46,7 @@ async def fetch_market_data():
             raw = await response.json()
             data = raw["marketwatch"]
             models = [MarketSymbol(**item) for item in data]
+            print(type(models))
             set_cached_data(CACHE_KEY, data)
             save_market_data_to_postgres(models)
             return models
