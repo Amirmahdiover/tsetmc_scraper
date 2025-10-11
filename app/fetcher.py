@@ -10,7 +10,7 @@ from app.postgres_reader import read_market_data_from_postgres
 def is_market_open() -> bool:
     now = datetime.now()
     # Optional: skip weekends (Saturday to Wednesday are workdays in Iran)
-    if now.weekday() >= 5:  # 5 = Friday, 6 = Saturday
+    if now.weekday() in (3, 4):
         return False
     return time(9, 0) <= now.time() <= time(12, 30)
 

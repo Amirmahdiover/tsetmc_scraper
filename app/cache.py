@@ -1,9 +1,12 @@
 import redis
 import json
 import time
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # Connect to local Redis server
-r = redis.Redis(host="redis", port=6379, db=0, decode_responses=True)
+r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
 
 # TTL for caching (e.g. 2 minutes)
 CACHE_TTL = 120
