@@ -104,13 +104,22 @@ async def get_market_data_api(
 
 
 
-from fastapi import WebSocket
-from app.socket_client import tsetmc_stream
-
-
-@app.websocket("/ws")
-async def market_stream(websocket: WebSocket, ins_code: str):
-    await websocket.accept()
-    
-    async for update in tsetmc_stream(ins_code):
-        await websocket.send_json(update)
+# --------------------------------------------------------
+# Future Improvement: Real-time market data streaming
+#
+# WebSocket support is planned for a future version.
+# The current stable version focuses on REST API access,
+# PostgreSQL persistence, Redis caching, sorting, filtering,
+# and pagination.
+#
+# from fastapi import WebSocket
+# from app.socket_client import tsetmc_stream
+#
+#
+# @app.websocket("/ws")
+# async def market_stream(websocket: WebSocket, ins_code: str):
+#     await websocket.accept()
+#
+#     async for update in tsetmc_stream(ins_code):
+#         await websocket.send_json(update)
+# --------------------------------------------------------

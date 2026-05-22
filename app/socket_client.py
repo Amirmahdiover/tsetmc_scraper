@@ -1,4 +1,9 @@
 # app/socket_client.py
+
+# Future Improvement:
+# This module is reserved for real-time WebSocket market data streaming.
+# It is not used in the current stable API version.
+
 import asyncio
 import json
 import websockets
