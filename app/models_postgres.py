@@ -7,7 +7,7 @@ class MarketSymbolORM(Base):
     __tablename__ = "market_symbols"
 
     id = Column(Integer, primary_key=True, index=True)
-    ins_code = Column(String, index=True)
+    ins_code = Column(String, unique=True, index=True, nullable=False)
     lva = Column(String)
     lvc = Column(String)
     
