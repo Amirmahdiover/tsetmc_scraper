@@ -20,6 +20,11 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
+
+
 @app.get("/market-data")
 async def get_market_data_api(
     sort_by: Optional[str] = Query(
@@ -34,6 +39,17 @@ async def get_market_data_api(
     ins_code: Optional[str] = Query(
         default=None,
         description="Optional insCode to filter by instrument"
+    ),
+    limit: int = Query(
+        default=50,
+        ge=1,
+        le=500,
+        description="Maximum number of records to return"
+    ),
+    offset: int = Query(
+        default=0,
+        ge=0,
+        description="Number of records to skip"
     )
 ):
     data = await fetch_market_data()
@@ -73,7 +89,16 @@ async def get_market_data_api(
 
     data = non_null_items + null_items
 
-    return [to_persian_dict(d) for d in data]
+    total = len(data)
+    paginated_data = data[offset: offset + limit]
+
+    return {
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+        "count": len(paginated_data),
+        "data": [to_persian_dict(d) for d in paginated_data]
+    }
 # uvicorn app.main:app --reload
 
 
